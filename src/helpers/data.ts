@@ -6,3 +6,15 @@ export function transformRequest(data: any): any {
   }
   return data
 }
+
+export function transformResponse(data: any): any {
+  if (typeof data === 'string') {
+    // 因为字符串类型不一定是一个JSON字符串
+    try {
+      data = JSON.parse(data)
+    } catch (e) {
+      // do nothing
+    }
+  }
+  return data
+}

@@ -1,4 +1,5 @@
 import { isPlainObject } from './util'
+import { head } from 'shelljs'
 
 function normalizeHeaderName(headers: any, normalizedName: string): void {
   if (!headers) return
@@ -11,7 +12,7 @@ function normalizeHeaderName(headers: any, normalizedName: string): void {
   })
 }
 
-export function processHeader(headers: any, data: any): any {
+export function processHeaders(headers: any, data: any): any {
   normalizeHeaderName(headers, 'Content-Type')
   if (isPlainObject(data)) {
     if (headers && !headers['Content-Type']) {
@@ -19,4 +20,25 @@ export function processHeader(headers: any, data: any): any {
     }
   }
   return headers
+}
+
+export function parseHeaders(headers: string): any {
+  let parsed = Object.create(null)
+  if (!headers) {
+    return parsed
+  }
+  // 回车 换行符
+  headers.split('\r\n').forEach(line => {
+    let [key, val] = line.split(':')
+    key = key.trim().toLowerCase()
+    if (!key) {
+      return
+    }
+    if (val) {
+      val = val.trim()
+    }
+    parsed[key] = val
+  })
+
+  return parsed
 }
